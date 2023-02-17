@@ -5,6 +5,7 @@ from .config.database import engine
 
 from .routers import users, auth
 
+#models.Base.metadata.drop_all(bind=engine)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()

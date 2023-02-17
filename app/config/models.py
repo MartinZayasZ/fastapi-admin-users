@@ -14,6 +14,10 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
     active = Column(Boolean, default=True)
+
+    role_id = Column(Integer, ForeignKey("roles.id"))
+    role = relationship("Role", back_populates="users")
+
     created_by = Column(Integer)
     updated_by = Column(Integer)
     created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
@@ -23,19 +27,6 @@ class User(Base):
         default=datetime.datetime.utcnow,
         onupdate=datetime.datetime.utcnow
     )
-
-    role_user = relationship("RoleUser", back_populates="user")
-
-class RoleUser(Base):
-    __tablename__ = "roles_users"
-
-    id = Column(Integer, primary_key=True, index=True)
-
-    role_id = Column(Integer, ForeignKey("roles.id"))
-    role = relationship("Role", back_populates="role_user")
-
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="role_user")
 
 class Role(Base):
     __tablename__ = "roles"
@@ -47,7 +38,7 @@ class Role(Base):
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
-    role_user = relationship("RoleUser", back_populates="role")
+    users = relationship("User", back_populates="role")
     permission_role = relationship("PermissionRole", back_populates="role")
 
 class PermissionRole(Base):

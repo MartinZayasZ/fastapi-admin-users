@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import update
 
 from .config import schemas, models
 
@@ -18,6 +19,12 @@ def create_user(db: Session, user: schemas.UserIn):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def update_user(db: Session, user: schemas.UserUpdate, id=id):
+    user_to_update = dict((k, v) for k, v in user.dict().items() if v is not None)
+    db.execute(update(models.User).where(models.User.id == id).values(**user_to_update))
+    db.commit()
+
 """ 
 
 
