@@ -6,8 +6,13 @@ from sqlalchemy.orm import Session
 from ..dependencies import get_db
 from ..config import schemas
 from .. import crud
+from ..config.security import verify_token, encode_password
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(
+    prefix="/users", 
+    tags=["users"], 
+    dependencies=[Depends(verify_token)]
+)
 
 @router.get("/")
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[schemas.UserOut]:
@@ -21,7 +26,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     return jsonable_encoder(users)
 
 @router.get("/{id}")
-def get_user_by_id(id: int, db: Session = Depends(get_db)) -> schemas.UserOut:
+async def get_user_by_id(id: int, db: Session = Depends(get_db)) -> schemas.UserOut:
     user = crud.get_user_by_id(db, id=id)
     if not user:
         return JSONResponse(
@@ -31,8 +36,9 @@ def get_user_by_id(id: int, db: Session = Depends(get_db)) -> schemas.UserOut:
     return jsonable_encoder(user)
 
 @router.post('/')
-def create_user(user: schemas.UserIn, db: Session = Depends(get_db)):
+async def create_user(user: schemas.UserIn, db: Session = Depends(get_db)):#aquí
     try:
+        user.password = encode_password(user.password)
         return crud.create_user(user=user, db=db)
     except Exception as e:
         print(e)
