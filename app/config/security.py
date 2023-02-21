@@ -13,7 +13,7 @@ from ..dependencies import get_db
 # openssl rand -hex 32
 SECRET_KEY = "49f5c127cac7c19e1eb2142841c9019d2e567e311670e05308e21998a8088d9e"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 43200
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 

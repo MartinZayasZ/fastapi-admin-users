@@ -28,6 +28,9 @@ class User(Base):
         onupdate=datetime.datetime.utcnow
     )
 
+    def __str__(self):
+        return f"User(id={self.id}, firstname={self.firstname}, email={self.email})"
+
 class Role(Base):
     __tablename__ = "roles"
 
